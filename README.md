@@ -20,7 +20,7 @@ Protótipo de uma base de dados a partir de uma Planilha Google. Grátis, rápid
   - Executar como: selecione seu usuário da conta Google
   - Quem pode acessar: Qualquer pessoa
   - Clique em "Implantar" e aguarde alguns instantes.
-  - Autorize o projeto (App Script) a acessar documentos da sua conta (Google Planilhas)
+  - Autorize o projeto (App Script) a acessar documentos da sua conta (Google Planilhas).
   - Copie o "código da implantação. Ele será a URL de base para acesso a sua API (ponto de acesso para sua base de dados).</br> Ex.: <code>https://script.google.com/macros/s/AKfyc...lS-nQ/exec</code>
 - Teste a implantação:
   - Siga esse endereço buscando essa URL no seu navegador de internet.
@@ -30,7 +30,7 @@ Protótipo de uma base de dados a partir de uma Planilha Google. Grátis, rápid
 ```json
 [
   {
-    "id":1,
+    "id":"f7eaeffe-b6f2-423c-9112-e39f5e2ea3d0",
     "name":"TV",
     "brand":"LG",
     "price":1000,
@@ -44,7 +44,36 @@ Protótipo de uma base de dados a partir de uma Planilha Google. Grátis, rápid
 ### 💻 Rotas HTTP:
 #### baseURL: <code>https://script.google.com/macros/s/AKfyc...lS-nQ/exec</code>
 
-- Listar todos os resultados:
-```
-GET baseURL?sheet=products
-```
+- Listar todos os items:
+  ```
+  GET baseURL?sheet=products
+  ```
+
+- Retornar um único item, pelo id do item:
+  ```
+  GET baseURL?sheet=products&id=your-item-id
+  ```
+
+- Adicionar um novo item:
+  ```
+  POST baseURL?sheet=products
+  Body: {"key1": "foo", "key2": "bar", "key3": 42, ...}
+  OBS: campo "id" gerado automaticamente, não adicionar no corpo da requisição.
+  ```
+
+- TODO - Editar um item, pelo id do item:
+  <!--
+  ```
+  POST baseURL?sheet=products&id=your-item-id
+  Body: {"key1": "foo", "key2": "bar", "key3": 42, ...}
+  OBS: campo "id" não incluído no corpo da requisição.
+  ```
+  -->
+
+- TODO - Excluir um item, pelo id do item:
+  <!--
+  ```
+  POST baseURL?sheet=products&id=your-item-id
+  Body: -
+  ```
+  -->
