@@ -17,6 +17,12 @@ function generateNewId() {
   return JSON.parse(response.getContentText())[0]
 }
 
+function getRowIndexById(sheet, id) {
+  const ids = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues().flat() //2D array, flat => 1st collumn
+  const rowIndex = ids.indexOf(id)
+  return rowIndex
+}
+
 //Get all items
 //Usage: GET https://script.google.com/macros/s/AKfyc...7gI7A/exec?sheet=your-sheet-name
 //Or:
@@ -69,16 +75,15 @@ function doPost(e) {
     //Request has "id" param in the url
     //PUT - Edit current item
     if ("id" in e.parameter) {
-      const ids = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues().flat() //2D array, flat => 1st collumn
       const id = e.parameter["id"]
-      const rowIndex = ids.indexOf(id)
+      const rowIndex = getRowIndexById(sheet, id)
       let updatedRow = headers.map(header => {
         return body[header]
       })
       updatedRow = updatedRow.slice(1)  //all the collumns from the row but the first one (id)
       sheet.getRange(rowIndex + 2, 2, 1, updatedRow.length).setValues([updatedRow]) //+1 for 0-index, +1 for header
       return ContentService
-        .createTextOutput(JSON.stringify({ statusCode: 200, result: "sucess", row: updatedRow }))
+        .createTextOutput(JSON.stringify({ statusCode: 200, result: "success", row: updatedRow }))
         .setMimeType(ContentService.MimeType.JSON)
     } 
     
@@ -100,8 +105,11 @@ function doPost(e) {
   //Request does not have body
   //DELETE - Remove item from table
   catch (error) {
+    const id = e.parameter["id"]
+    const rowIndex = getRowIndexById(sheet, id)
+    sheet.deleteRow(rowIndex + 2)   //+1 for 0-index, +1 for header
     return ContentService
-      .createTextOutput(JSON.stringify({ statusCode: 400, result: "TODO - DELETE" }))
+      .createTextOutput(JSON.stringify({ statusCode: 204, result: "success" }))
       .setMimeType(ContentService.MimeType.JSON)
   }
 }
