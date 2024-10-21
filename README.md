@@ -53,7 +53,7 @@ OBS: O [Google Apps Script](https://www.google.com/script/start/) só aceita req
 
 - Retornar um único item, pelo id do item:
   ```
-  GET baseURL?sheet=products&id=your-item-id
+  GET baseURL?sheet=products&field_name=id&field_value=your-item-id
   ```
 
 - Adicionar um novo item:

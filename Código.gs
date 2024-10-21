@@ -19,7 +19,7 @@ function generateNewId() {
 
 function getRowIndexById(sheet, id) {
   const ids = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues().flat() //2D array, flat => 1st collumn
-  const rowIndex = ids.indexOf(id)
+  const rowIndex = ids.indexOf(id)  //TODO: fix bug: if "id" is "Number" instead of "String", it will return -1
   return rowIndex
 }
 
@@ -27,7 +27,7 @@ function getRowIndexById(sheet, id) {
 //Usage: GET https://script.google.com/macros/s/AKfyc...7gI7A/exec?sheet=your-sheet-name
 //Or:
 //Get one item
-//Usage: GET https://script.google.com/macros/s/AKfyc...7gI7A/exec?sheet=your-sheet-name&id=item-id
+//Usage: GET https://script.google.com/macros/s/AKfyc...7gI7A/exec?sheet=your-sheet-name&field_name=id&field_value=item-id
 function doGet(e) {
   
   const sheetName = e.parameter["sheet"]
@@ -35,11 +35,13 @@ function doGet(e) {
   const data = sheet.getDataRange().getValues()
   let jsonData = convertToJson(data)
 
-  //If true: GET - Return one item
-  //Else: GET - Return all items
-  if ("id" in e.parameter) {
-    const id = e.parameter["id"]
-    jsonData = jsonData.filter(e => e["id"] == id)[0]
+  //Filter by some field: 
+  //If true: GET - Filter all items, returning one;
+  //Else: GET - Return all items.
+  if ("field_name" in e.parameter) {
+    const field_name = e.parameter["field_name"]
+    const field_value = e.parameter["field_value"]
+    jsonData = jsonData.filter(e => e[field_name] == field_value)
   }
 
   return ContentService
